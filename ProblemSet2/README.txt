@@ -1,1 +1,1 @@
-
+This folder contains the code and write-up for problem set #2 for the course Bayesian Statistical Modeling & Computation taught by Dr. Klaus Keller at Thayer School of Engineering at Dartmouth College. The R code was written with R Version 2024.12.0+467 in January 2025. 
