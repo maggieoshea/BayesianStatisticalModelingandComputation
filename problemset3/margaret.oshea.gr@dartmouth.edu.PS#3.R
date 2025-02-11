@@ -18,6 +18,7 @@
 # sources:
 # Density plots in R: https://www.geeksforgeeks.org/histograms-and-density-plots-in-r/
 # Integration in R: https://stackoverflow.com/questions/40851328/compute-area-under-density-estimation-curve-i-e-probability
+# ChatGPT for coding help, especially plotting in R as well as clarifying concepts 
 # R 'norm' funtions: https://seankross.com/notes/dpqr/
 # Qian, S. S., Stow, C. A., & Borsuk, M. E. (2003). On Monte Carlo methods for Bayesian inference. Ecological Modelling, 159(2-3), 269–277.
 # D’Agostini, G. (2003). Bayesian reasoning in data analysis: A critical introduction. Singapore: World Scientific Publishing. (Chapter 6 only).
