@@ -23,6 +23,7 @@
 # D’Agostini, G. (2003). Bayesian reasoning in data analysis: A critical introduction. Singapore: World Scientific Publishing. (Chapter 6 only).
 # Ruckert, K. L., Guan, Y., Bakker, A. M. R., Forest, C. E., & Keller, K. (2017). The effects of time-varying observation errors on semi-empirical sea-level projections. Climatic Change, 140(3-4), 349–360. https://doi.org/10.1007/s10584-016-1858-z
 # Kim, Y., Bang, H., Kim, Y. & Bang, H. Introduction to Kalman Filter and Its Applications. in Introduction and Implementations of the Kalman Filter (IntechOpen, 2018). doi:10.5772/intechopen.80600.
+# Conversation with Anna Valentine
 
 ####################################################
 # Clear any existing variables and plots. 
@@ -58,7 +59,7 @@ df <- approxfun(density(samples))
 
 # Plot PDF
 plot(density(samples), main="", 
-     xlab="Fuel in Tank", ylab="PDF")
+     xlab="Fuel in Tank (liters)", ylab="PDF")
 abline(v=expected_value,col="blue",lty=1,lwd=4)
 abline(v=0,col="black",lty=2,lwd=2)
 legend("topright", c("Expected Value","Zero Fuel"),
@@ -71,7 +72,7 @@ title(main="PDF of Usable Fuel based on\nFuel Gauge Reading of 34 Liters")
 density_function <- approxfun(density_estimate$x, density_estimate$y, rule=2)
 # integrate from negative infinity to 0 
 prob_less_than_zero <- integrate(density_function, lower=-Inf, upper=0)$value
-
+print(prob_less_than_zero)
 
 # Find the most probable value 
 max_probability = max(density_estimate$y)
@@ -106,14 +107,13 @@ posterior_normed <- posterior / sum(posterior)
 dx = (gridvalues[2] - gridvalues[1])
 cdf_posterior <- cumsum(posterior_normed) * dx
 plot(gridvalues, cdf_posterior, type = "l", lwd = 5, col = "blue", 
-     main = "CDF of Posterior Distribution", xlab = "Fuel in Tank", ylab = "CDF")
+     main = "CDF of Posterior Distribution", xlab = "Fuel in Tank (liters)", ylab = "CDF")
+abline(v=0, col='black', lty=2, lwd=2)
+legend("bottomright", legend = c("CDF", '0 Fuel'),
+       col = c("blue", 'black'), lwd = 2,
+       lty = c(1,2),
+       cex = 1)
 
-# Add vertical line at x=0, and horizontal at y=0 to 'point' at prob of 0
-segments(0, par("usr")[3], 0, 0, col="red", lwd=5)
-segments(par("usr")[1], 0, 0, 0, col="red", lwd=5)
-
-legend("bottomright", legend = c("CDF","Probability of 0 fuel"),
-       col = c("blue", "red"), lwd = 2, cex = 1)
 
 
 # Find probability of negative fuel 
@@ -125,7 +125,7 @@ print(probnegfuel)
 plot(density(samples), col="blue",
      lwd=2,
      ylab= "PDF", 
-     xlab='Fuel',
+     xlab='Fuel (liters)',
      main="Comparing Updated Posterior with Original PDF")
 lines(gridvalues, posterior_normed, col = "red", lwd = 2)
 
@@ -168,7 +168,7 @@ BMC_posterior <- posterior_values / sum(posterior_values)
 BMC_posterior_samples <- sample(prior_samples, size = n_trials, replace = TRUE, prob = BMC_posterior)
 
 plot(density(BMC_posterior_samples), col = "purple", lwd = 2, 
-     xlab = "Fuel in Tank", ylab = "Density", main = "Posterior from Bayes Monte Carlo (BMC)")
+     xlab = "Fuel in Tank (liters)", ylab = "Density", main = "Posterior from Bayes Monte Carlo (BMC)")
 
 
 # Test convergence of BMC #
@@ -185,7 +185,7 @@ if (convergence_test <= 0.05) {
 plot(density(samples), col="blue",
      lwd=2,
      ylab= "PDF", 
-     xlab='Fuel',
+     xlab='Fuel (liters)',
      main="Comparing Posteriors: PDF, Updated Posterior, & BMC",
      ylim = c(0, 0.021))
 lines(gridvalues, posterior_normed, col = "red", lwd = 2)
@@ -195,7 +195,9 @@ lines(density(BMC_posterior_samples), col = "purple", lwd = 4)
 abline(v = 0, col = "black", lty = 2, lwd = 2)
 abline(v = observed, col = "green", lty = 2, lwd = 2)
 legend("topright", legend = c("Q2 PDF","Q4 Posterior", "Q5 BMC Posterior", "Observed 34 Liters", "0 Liters"),
-       col = c("blue", "red", "purple", "green",  "black"), lwd = 2, cex = 0.75)
+       col = c("blue", "red", "purple", "green",  "black"), 
+       lty = c(1, 1, 1, 2, 2),
+       lwd = 2, cex = 0.75)
 
 
 # Find probability of negative fuel 
@@ -254,24 +256,21 @@ print(probrunningout_lower)
 plot(density(samples), col="blue",
      lwd=2,
      ylab= "PDF", 
-     xlab='Fuel',
+     xlab='Fuel (liters)',
      main="Comparing Posteriors: PDF, Updated Posterior, & BMC\nWith Needed Fuel Estimates",
      ylim=c(0, 0.021))
 lines(gridvalues, posterior_normed, col = "red", lwd = 2)
 lines(density(BMC_posterior_samples), col = "purple", lwd = 2)
 
-# Add the vertical lines as you have already
+# Add the vertical lines
 abline(v = 0, col = "black", lty = 2, lwd = 2)
 abline(v = observed, col = "green", lty = 2, lwd = 3)
 abline(v = fuel_needed_100min , col = "orange", lty = 2, lwd = 2)
 abline(v = minimum_fuel_needed_100min, col = "cyan1", lty = 2, lwd = 2)
 
-# Fill the area between the upper and lower values using polygon()
-# Using orange color with alpha transparency for the fuel_needed range
+# Fill the area between the upper and lower values (uncertainty) around estimates
 polygon(c(fuel_needed_100min_lower, fuel_needed_100min_lower, fuel_needed_100min_upper, fuel_needed_100min_upper), 
         c(0, 0.055, 0.055, 0), col = rgb(1, 0.647, 0, alpha = 0.3), border = NA)
-
-# Using yellow color with alpha transparency for the minimum fuel_needed range
 polygon(c(minimum_needed_100min_lower, minimum_needed_100min_lower, minimum_needed_100min_upper, minimum_needed_100min_upper), 
         c(0, 0.055, 0.055, 0), col = rgb(0, 1, 1, alpha = 0.3), border = NA)
 
@@ -296,7 +295,7 @@ plot(x = gridvalues, y=(available_flighttime/60),
      type='l', 
      lwd=1,
      ylab= "Flight Time (hours)", 
-     xlab='Fuel',
+     xlab='Fuel (liters)',
      main="Flight Time vs Fuel Needed")
 polygon(c(gridvalues, rev(gridvalues)),
         c((available_flighttime_upper / 60), rev(available_flighttime_lower / 60)),
