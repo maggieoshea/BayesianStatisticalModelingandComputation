@@ -1,1 +1,1 @@
-This is a folder containing the code and write-up for Problem Set #4 for the "Bayesian Statistical Modeling & Computation" course taught by Dr. Klaus Keller in Winter 2025
+This is a folder containing the code and write-up for Problem Set #4 for the "Bayesian Statistical Modeling & Computation" course taught by Dr. Klaus Keller in Winter 2025. The write-up and code include the written questions posed by the assignment followed by the code (in the .R file) or followed by the written answer and selected plots (in the write-up.) 
